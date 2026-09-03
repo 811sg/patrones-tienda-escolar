@@ -1,17 +1,19 @@
 import type { OrderState } from "./OrderState";
 import type { PedidoContext } from "./PedidoContext";
 import { CanceladoState } from "./CanceladoState";
-import { PagadoState } from "./PagadoState";
+import { EnRevisionState } from "./EnRevisionState";
 
 /** PATRÓN: State — Rol: "ConcreteState" */
 export class PendienteState implements OrderState {
+
   readonly name = "Pendiente";
 
   avanzar(context: PedidoContext): void {
-    context.setState(new PagadoState());
+    context.setState(new EnRevisionState());
   }
 
   cancelar(context: PedidoContext): void {
     context.setState(new CanceladoState());
   }
+
 }
