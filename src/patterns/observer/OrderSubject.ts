@@ -3,9 +3,10 @@ import { OrderObserver } from "./OrderObserver";
 
 /**
  * PATRÓN: Observer — Rol: "Subject"
- * Mantiene la lista de interesados en saber cuándo se confirma un
- * pedido y los avisa a todos, sin saber qué hace cada uno con esa
- * información (enviar un correo, descontar inventario, etc.).
+ * Mantiene la lista de interesados en saber cuándo cambia el estado
+ * de un pedido (PATRÓN: State) y los avisa a todos, sin saber qué
+ * hace cada uno con esa información (enviar un correo, actualizar
+ * inventario, etc.).
  */
 export class OrderSubject {
   private observers: OrderObserver[] = [];
@@ -18,9 +19,9 @@ export class OrderSubject {
     this.observers = this.observers.filter((o) => o !== observer);
   }
 
-  notify(order: Order): string[] {
+  notify(order: Order, previousState: string, newState: string): string[] {
     return this.observers.map((observer) => {
-      observer.onOrderConfirmed(order);
+      observer.onOrderStateChanged(order, previousState, newState);
       return observer.name;
     });
   }

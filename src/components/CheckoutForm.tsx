@@ -14,7 +14,8 @@ import {
   PaymentMethodFactory,
   PaymentMethodType,
 } from "@/patterns/factory/PaymentMethodFactory";
-import { orderSubject } from "@/patterns/observer/orderNotifications";
+import { crearPedidoContext } from "@/patterns/observer/orderNotifications";
+import { PedidoContext } from "@/patterns/state/PedidoContext";
 import { useCart } from "@/patterns/singleton/useCart";
 import { findDiscountStrategy } from "@/patterns/strategy/discountCatalog";
 
@@ -36,7 +37,7 @@ export default function CheckoutForm({
   onConfirmed,
   onBack,
 }: {
-  onConfirmed: (order: Order, total: number) => void;
+  onConfirmed: (order: Order, total: number, pedidoContext: PedidoContext) => void;
   onBack: () => void;
 }) {
   const { items, subtotal, clear } = useCart();
@@ -111,11 +112,14 @@ export default function CheckoutForm({
       return;
     }
 
-    // PATRÓN Observer: se avisa a todos los interesados en el pedido confirmado.
-    orderSubject.notify(order);
+    // PATRÓN Observer + State: se crea el contexto del pedido (con sus
+    // observadores ya suscritos) y se avanza de "Pendiente" a "Pagado".
+    // Ese avance dispara la notificación automáticamente por dentro.
+    const pedidoContext = crearPedidoContext(order);
+    pedidoContext.avanzar();
 
     clear();
-    onConfirmed(order, total);
+    onConfirmed(order, total, pedidoContext);
   }
 
   return (

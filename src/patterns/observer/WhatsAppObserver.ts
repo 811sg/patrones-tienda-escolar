@@ -3,12 +3,16 @@ import { OrderObserver } from "./OrderObserver";
 
 /** PATRÓN: Observer — Rol: "ConcreteObserver" */
 export class WhatsAppObserver implements OrderObserver {
-    
+
     readonly name = "Notificador de WhatsApp";
 
-    onOrderConfirmed(order: Order): void {
+    onOrderStateChanged(
+      order: Order,
+      previousState: string,
+      newState: string
+    ): void {
         console.log(
-            `[WhatsApp] Pedido ${order.id} confirmado`
+            `[WhatsApp] Pedido ${order.id}: ${previousState} → ${newState}`
         );
     }
 }

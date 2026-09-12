@@ -5,9 +5,19 @@ import { OrderObserver } from "./OrderObserver";
 export class InventoryObserver implements OrderObserver {
   readonly name = "Actualizador de inventario";
 
-  onOrderConfirmed(order: Order): void {
-    console.log(
-      `[inventario] Descontando stock de ${order.items.length} producto(s) del pedido ${order.id}`
-    );
+  onOrderStateChanged(
+    order: Order,
+    previousState: string,
+    newState: string
+  ): void {
+    if (newState === "Pagado") {
+      console.log(
+        `[inventario] Descontando stock de ${order.items.length} producto(s) del pedido ${order.id}`
+      );
+    } else if (newState === "Cancelado" && previousState !== "Pendiente") {
+      console.log(
+        `[inventario] Restituyendo stock de ${order.items.length} producto(s) del pedido ${order.id}`
+      );
+    }
   }
 }

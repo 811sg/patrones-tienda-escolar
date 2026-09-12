@@ -18,10 +18,10 @@ export default function Home() {
   const [confirmedTotal, setConfirmedTotal] = useState(0);
   const [pedidoContext, setPedidoContext] = useState<PedidoContext | null>(null);
 
-  function handleConfirmed(order: Order, total: number) {
+  function handleConfirmed(order: Order, total: number, pedidoContext: PedidoContext) {
     setConfirmedOrder(order);
     setConfirmedTotal(total);
-    setPedidoContext(new PedidoContext());
+    setPedidoContext(pedidoContext);
     setView("confirmation");
   }
 

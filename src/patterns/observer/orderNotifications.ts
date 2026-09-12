@@ -1,15 +1,18 @@
+import type { Order } from "@/lib/types";
 import { EmailNotifierObserver } from "./EmailNotifierObserver";
 import { InventoryObserver } from "./InventoryObserver";
 import { WhatsAppObserver } from "./WhatsAppObserver";
-import { OrderSubject } from "./OrderSubject";
-
+import { PedidoContext } from "../state/PedidoContext";
 /**
- * Instancia compartida del Subject, con los observadores ya suscritos.
- * El checkout solo llama a orderSubject.notify(pedido) cuando se
- * confirma la compra — no conoce a EmailNotifierObserver ni a
- * InventoryObserver directamente.
+ * Fábrica de PedidoContext con los observadores ya suscritos.
+ * El checkout solo llama a crearPedidoContext(pedido) y luego usa
+ * avanzar()/cancelar() — no conoce a EmailNotifierObserver,
+ * InventoryObserver ni WhatsAppObserver directamente.
  */
-export const orderSubject = new OrderSubject();
-orderSubject.subscribe(new EmailNotifierObserver());
-orderSubject.subscribe(new InventoryObserver());
-orderSubject.subscribe(new WhatsAppObserver());
+export function crearPedidoContext(order: Order): PedidoContext {
+  const context = new PedidoContext(order);
+  context.subscribe(new EmailNotifierObserver());
+  context.subscribe(new InventoryObserver());
+  context.subscribe(new WhatsAppObserver());
+  return context;
+}
